@@ -7,14 +7,21 @@
 // @include      http://ead.uems.br/moodle/course/*
 // ==/UserScript==
 
+function checkIfAvailableToOpen(link) {
+  const icon = link.firstElementChild.getAttribute("src");
+  if (icon.search("url") !== -1 || icon.search("pdf") !== -1 || icon.search("bmp") !== -1){
+    return true;
+  }
+  return false;
+}
+
 (function() {
   'use strict';
   const links = document.getElementsByClassName("aalink");
   for (let i = 0; i < links.length; i++) {
     const link = links[i];
-    link.setAttribute("onclick", '');
-    const icon = link.firstElementChild.getAttribute("src")
-    if (icon.search("url") !== -1 || icon.search("pdf") !== -1 || icon.search("bmp") !== -1 ) {
+    link.removeAttribute("onclick");
+    if ( checkIfAvailableToOpen(link) ) {
       link.addEventListener("click", e => {
         e.preventDefault();
         const documentOpened = window.open(link.getAttribute("href"), '_blank');
@@ -45,7 +52,8 @@
             }
           }
         }, 5);
-    });}
+      });
+    }
     else {
       link.setAttribute("target", "_blank");
     }
